@@ -1,4 +1,5 @@
 # Instrucciones
+Agregar el archivo .env en Backend/ProjectoContable
 
 ## Instalación y construcción
 Para instalar y construir todos los servicios, ejecuta el siguiente comando:
