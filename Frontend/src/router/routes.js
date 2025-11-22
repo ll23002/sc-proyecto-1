@@ -7,7 +7,6 @@ const routes = [
       { path: 'cargar-datos', component: () => import('pages/LoadDataPage.vue') },
       { path: 'transacciones', component: () => import('pages/TransactionsPage.vue') },
       { path: 'reportes', component: () => import('pages/ReportsPage.vue') },
-      { path: 'newPage', component: () => import('pages/newPage.vue') },
     ],
   },
 

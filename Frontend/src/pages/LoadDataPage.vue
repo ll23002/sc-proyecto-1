@@ -2,7 +2,6 @@
   <q-page class="q-pa-md">
     <div class="text-h4 q-mb-md page-title">Cargar Datos desde Excel</div>
 
-    <!-- Banner de estado del backend -->
     <BackendStatusBanner
       :backend-status="backendStatus"
       :error="error"
