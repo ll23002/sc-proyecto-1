@@ -33,15 +33,6 @@
           </q-card>
         </div>
 
-        <div class="col-12 col-sm-6 col-md-3">
-          <q-card class="action-card cursor-pointer" @click="goTo('/validar')">
-            <q-card-section class="text-center">
-              <q-icon name="check_circle" size="56px" color="positive" class="q-mb-md" />
-              <div class="text-h6 q-mb-xs card-title">Validar</div>
-              <div class="text-caption card-subtitle">Verificar balance</div>
-            </q-card-section>
-          </q-card>
-        </div>
 
         <div class="col-12 col-sm-6 col-md-3">
           <q-card class="action-card cursor-pointer" @click="goTo('/reportes')">

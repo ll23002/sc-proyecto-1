@@ -81,7 +81,6 @@
 import { ref, onUnmounted } from 'vue'
 import { useQuasar } from 'quasar'
 import { useBackendStatus } from 'src/composables/useBackendStatus'
-import BackendStatusBanner from 'src/components/BackendStatusBanner.vue'
 import * as XLSX from 'xlsx'
 import axios from 'axios'
 
