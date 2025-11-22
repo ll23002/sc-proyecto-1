@@ -1,5 +1,11 @@
 # Sistema Contable con Clasificación Automática - Frontend
 
+Diego Arturo Ortez Castillo OC22002
+Francisco Manuel Calderón Sandoval CS23038
+Nelson Adalid Orantes Mendoza OM23011
+Samuel Alexander López López LL23002
+
+
 Sistema contable básico desarrollado con Quasar Framework (Vue 3) que permite gestionar transacciones contables con clasificación automática mediante LLMs.
 
 ## 🚀 Características Implementadas
