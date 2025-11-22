@@ -1,0 +1,84 @@
+services:
+  db16:
+    image: pgvector/pgvector:pg16
+    container_name: ProyectoContable_db16
+    environment:
+      POSTGRES_DB: ProyectoContable
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345678
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ProyectoContable"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin4_16:
+    image: dpage/pgadmin4
+    container_name: ProyectoContable_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ll23002@ues.edu.sv
+      PGADMIN_DEFAULT_PASSWORD: 12345678
+      PGADMIN_LISTEN_PORT: 5050
+    ports:
+      - "5050:5050"
+    depends_on:
+      - db16
+
+  setup:
+    build: ./Backend
+    container_name: proyecto_contable_setup
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py importar_cuentas /app/data/cuentas.xlsx && python manage.py generar_embeddings"
+    volumes:
+      - ./Backend:/app
+      - ./data:/app/data
+    env_file:
+      - ./Backend/ProjectoContable/.env
+    environment:
+      - DB_HOST=db16
+      - DB_PORT=5432
+    depends_on:
+      db16:
+        condition: service_started
+    restart: 'no'
+
+  backend:
+    build: ./Backend
+    container_name: proyecto_contable_backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./Backend:/app
+      - ./data:/app/data
+    ports:
+      - "8000:8000"
+    env_file:
+      - Backend/ProjectoContable/.env
+    environment:
+      - DB_HOST=db16
+      - DB_PORT=5432
+    depends_on:
+      db16:
+        condition: service_started
+      setup:
+        condition: service_completed_successfully
+
+  frontend:
+    build: ./Frontend
+    container_name: proyecto_contable_frontend
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules
+    depends_on:
+      backend:
+        condition: service_started
+    environment:
+      VITE_API_URL: http://localhost:8000/api
+
+volumes:
+  pg_data: {}

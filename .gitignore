@@ -1,0 +1,40 @@
+.DS_Store
+.thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.env.local*
+
+.idea/
+
+Frontend/node_modules/
+Frontend/.quasar/
+Frontend/dist/
+Frontend/quasar.config.*.temporary.compiled*
+
+# Cordova related directories and files
+Frontend/src-cordova/node_modules
+Frontend/src-cordova/platforms
+Frontend/src-cordova/plugins
+Frontend/src-cordova/www
+
+# Capacitor related directories and files
+Frontend/src-capacitor/www
+Frontend/src-capacitor/node_modules/
+
+
+
+# Entornos virtuales
+Backend/.venv/
+Backend/env/
+
+# Archivos de Python/Django
+Backend/__pycache__/
+Backend/*.pyc
+Backend/*.sqlite3
