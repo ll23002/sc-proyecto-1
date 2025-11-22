@@ -25,10 +25,6 @@
           <q-tooltip>Transacciones</q-tooltip>
         </q-btn>
 
-        <q-btn flat dense round icon="check_circle" class="q-mr-sm" @click="goTo('/validar')">
-          <q-tooltip>Validar Balance</q-tooltip>
-        </q-btn>
-
         <q-btn flat dense round icon="assessment" class="q-mr-sm" @click="goTo('/reportes')">
           <q-tooltip>Reportes</q-tooltip>
         </q-btn>
@@ -67,13 +63,6 @@
             <q-icon name="list_alt" />
           </q-item-section>
           <q-item-section>Transacciones</q-item-section>
-        </q-item>
-
-        <q-item clickable @click="goTo('/validar')">
-          <q-item-section avatar>
-            <q-icon name="check_circle" />
-          </q-item-section>
-          <q-item-section>Validar Balance</q-item-section>
         </q-item>
 
         <q-item clickable @click="goTo('/reportes')">
@@ -257,14 +246,6 @@ function changeTheme(mode) {
     document.body.classList.remove('body--dark', 'body--light')
     document.body.classList.add('body--light')
   }
-
-  $q.notify({
-    message: `Tema cambiado a: ${themeOptions.find((opt) => opt.value === mode).label}`,
-    color: 'positive',
-    icon: 'check_circle',
-    position: 'top',
-    timeout: 2000,
-  })
 }
 
 onMounted(() => {

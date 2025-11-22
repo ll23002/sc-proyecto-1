@@ -13,7 +13,7 @@
 
       <!-- Quick Actions -->
       <div class="row q-col-gutter-lg q-mb-xl">
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-4">
           <q-card class="action-card cursor-pointer" @click="goTo('/cargar-datos')">
             <q-card-section class="text-center">
               <q-icon name="upload_file" size="56px" color="primary" class="q-mb-md" />
@@ -23,7 +23,7 @@
           </q-card>
         </div>
 
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-4">
           <q-card class="action-card cursor-pointer" @click="goTo('/transacciones')">
             <q-card-section class="text-center">
               <q-icon name="list_alt" size="56px" color="primary" class="q-mb-md" />
@@ -33,17 +33,7 @@
           </q-card>
         </div>
 
-        <div class="col-12 col-sm-6 col-md-3">
-          <q-card class="action-card cursor-pointer" @click="goTo('/validar')">
-            <q-card-section class="text-center">
-              <q-icon name="check_circle" size="56px" color="positive" class="q-mb-md" />
-              <div class="text-h6 q-mb-xs card-title">Validar</div>
-              <div class="text-caption card-subtitle">Verificar balance</div>
-            </q-card-section>
-          </q-card>
-        </div>
-
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-4">
           <q-card class="action-card cursor-pointer" @click="goTo('/reportes')">
             <q-card-section class="text-center">
               <q-icon name="assessment" size="56px" color="secondary" class="q-mb-md" />
@@ -103,21 +93,7 @@
             </q-card>
           </div>
 
-          <div class="col-12 col-md-4">
-            <q-card flat bordered class="feature-card">
-              <q-card-section>
-                <q-icon name="balance" size="32px" color="positive" class="q-mb-sm" />
-                <div class="text-subtitle1 text-weight-medium q-mb-xs feature-title">
-                  Validación de Balance
-                </div>
-                <div class="text-body2 feature-description">
-                  Verifique que el Debe y el Haber cuadren correctamente
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-6">
             <q-card flat bordered class="feature-card">
               <q-card-section>
                 <q-icon name="description" size="32px" color="secondary" class="q-mb-sm" />
@@ -131,7 +107,7 @@
             </q-card>
           </div>
 
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-6">
             <q-card flat bordered class="feature-card">
               <q-card-section>
                 <q-icon name="file_download" size="32px" color="secondary" class="q-mb-sm" />
