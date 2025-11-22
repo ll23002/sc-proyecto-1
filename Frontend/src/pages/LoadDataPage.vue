@@ -78,14 +78,16 @@
   </q-page>
 </template>
 <script setup>
-import { ref, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
 import { useBackendStatus } from 'src/composables/useBackendStatus'
 import BackendStatusBanner from 'src/components/BackendStatusBanner.vue'
 import * as XLSX from 'xlsx'
 import axios from 'axios'
 
 const $q = useQuasar()
+const router = useRouter()
 const { backendStatus, error, checkBackendStatus, startMonitoring, stopMonitoring } =
   useBackendStatus()
 const file = ref(null)
@@ -214,7 +216,18 @@ const sendToBackend = async () => {
       color: 'positive',
       message: `Archivo enviado correctamente: ${response.data.message || 'Operación exitosa'}`,
       position: 'top',
+      timeout: 2500,
     })
+
+    // Limpiar los datos después de cargar exitosamente
+    file.value = null
+    previewData.value = []
+    validationErrors.value = []
+
+    // Redirigir a la página inicial después de 2 segundos
+    setTimeout(() => {
+      router.push('/')
+    }, 2000)
 
   } catch (error) {
     $q.notify({
@@ -226,9 +239,13 @@ const sendToBackend = async () => {
     uploading.value = false
   }
 }
+
+onMounted(() => {
+  startMonitoring()
+})
+
 onUnmounted(() => {
   stopMonitoring()
-  startMonitoring()
 })
 </script>
 <style scoped lang="scss">
