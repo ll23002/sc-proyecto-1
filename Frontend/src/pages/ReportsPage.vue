@@ -241,7 +241,7 @@ const reporteDiarioExcel = () => {
 
   ws["!cols"] = [
     { wch: 20 },
-    { wch: 10 },
+    { wch: 20 },
     { wch: 40 },
     { wch: 15 },
     { wch: 15 }
@@ -458,7 +458,7 @@ const reporteMayorExcel = () => {
 
   ws["!cols"] = [
     { wch: 20 },
-    { wch: 10 },
+    { wch: 20 },
     { wch: 40 },
     { wch: 15 },
     { wch: 15 }
