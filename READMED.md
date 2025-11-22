@@ -24,3 +24,5 @@ Todos los derechos reservados a:
 - Francisco Manuel Calderón Sandoval CS23038
 - Nelson Adalid Orantes Mendoza OM23011
 - Samuel Alexander López López LL23002
+- Michael Jordi Martínez Martínez MM23012
+- Christopher Alexander Romero Méndez RM23094
