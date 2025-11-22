@@ -1,0 +1,13 @@
+node_modules/
+
+# Archivos de caché y build de Quasar/Vite
+.quasar/
+dist/
+dist-ssr/
+dist-cordova/
+dist-electron/
+
+# Logs y archivos del IDE
+.vscode/
+.idea/
+*.log

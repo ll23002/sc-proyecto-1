@@ -1,0 +1,408 @@
+// app global css in SCSS form
+
+// Variables rediseñadas - Negro con highlights blancos / Blanco con highlights azules
+$dark-bg: #020617;
+$dark-surface: #0a0e1a;
+$dark-highlight: #ffffff;
+$dark-shadow: rgba(0, 0, 0, 0.5);
+
+// Variables para modo claro
+$light-bg: #ffffff;
+$light-surface: #f8fafc;
+$light-highlight: #3b82f6;
+$light-shadow: rgba(0, 0, 0, 0.1);
+
+// Fondo - MODO OSCURO: #020617 con sutiles variaciones
+body.body--dark {
+  background: #020617;
+  min-height: 100vh;
+  position: relative;
+}
+
+// Fondo - MODO CLARO: Blanco puro
+body.body--light {
+  background: #ffffff;
+  min-height: 100vh;
+  position: relative;
+}
+
+.q-page {
+  background: transparent;
+  position: relative;
+  z-index: 1;
+  padding: 2rem 1.5rem !important;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+// Estilos para modo oscuro
+.q-dark {
+  background: transparent;
+}
+
+// ========== MODO OSCURO: #020617 con highlights blancos ==========
+.body--dark {
+  // Cards - Negro con bordes blancos sutiles
+  .q-card {
+    background: #0a0e1a !important;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+    will-change: transform;
+
+    &:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.9) !important;
+      border-color: rgba(255, 255, 255, 0.2) !important;
+      transform: translateY(-2px);
+    }
+  }
+
+  // Header - Negro con línea blanca
+  .q-header {
+    background: #020617 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  // Drawer - Negro con borde blanco
+  .q-drawer {
+    background: #020617 !important;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.5) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  // Inputs - Negro con bordes blancos
+  .q-field--outlined .q-field__control,
+  .q-field--filled .q-field__control,
+  .q-field--standout .q-field__control {
+    background: #0a0e1a !important;
+    border-radius: 12px !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    transition: border-color 0.2s ease;
+
+    &:before,
+    &:after {
+      border: none !important;
+    }
+  }
+
+  .q-field--outlined .q-field__control:hover,
+  .q-field--filled .q-field__control:hover,
+  .q-field--standout .q-field__control:hover {
+    border-color: rgba(255, 255, 255, 0.25) !important;
+  }
+
+  .q-field--outlined.q-field--focused .q-field__control,
+  .q-field--filled.q-field--focused .q-field__control,
+  .q-field--standout.q-field--focused .q-field__control {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    box-shadow:
+      inset 0 2px 4px rgba(0, 0, 0, 0.5),
+      0 0 0 2px rgba(255, 255, 255, 0.15) !important;
+  }
+
+  // Botones - Con highlights blancos
+  .q-btn {
+    border-radius: 12px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6) !important;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+    will-change: transform;
+
+    &:hover {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7) !important;
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
+      transform: translateY(0);
+    }
+  }
+
+  .q-btn--unelevated {
+    background: #ffffff !important;
+    color: #020617 !important;
+  }
+
+  .q-btn--outline {
+    background: transparent !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.5) !important;
+    }
+  }
+
+  .q-btn--flat {
+    box-shadow: none !important;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+
+  // Menú - Negro con borde blanco
+  .q-menu {
+    background: #0a0e1a !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  // Tablas
+  .q-table {
+    background: #0a0e1a !important;
+    border-radius: 12px !important;
+
+    thead tr,
+    tbody td {
+      border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+  }
+
+  // Diálogos
+  .q-dialog__backdrop {
+    background: rgba(0, 0, 0, 0.7) !important;
+  }
+}
+
+// ========== MODO CLARO: Blanco con highlights azules ==========
+.body--light {
+  // Cards - Blanco con bordes azules
+  .q-card {
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid rgba(59, 130, 246, 0.2) !important;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+    will-change: transform;
+
+    &:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+      border-color: rgba(59, 130, 246, 0.4) !important;
+      transform: translateY(-2px);
+    }
+  }
+
+  // Header - Blanco con línea azul
+  .q-header {
+    background: #ffffff !important;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+
+    .q-toolbar-title,
+    .q-btn {
+      color: #020617 !important;
+    }
+  }
+
+  // Drawer - Blanco con borde azul
+  .q-drawer {
+    background: #ffffff !important;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05) !important;
+    border-right: 1px solid rgba(59, 130, 246, 0.2);
+  }
+
+  // Inputs - Blanco con bordes azules
+  .q-field--outlined .q-field__control,
+  .q-field--filled .q-field__control,
+  .q-field--standout .q-field__control {
+    background: #f8fafc !important;
+    border-radius: 12px !important;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    transition: border-color 0.2s ease;
+
+    &:before,
+    &:after {
+      border: none !important;
+    }
+  }
+
+  .q-field--outlined .q-field__control:hover,
+  .q-field--filled .q-field__control:hover,
+  .q-field--standout .q-field__control:hover {
+    border-color: rgba(59, 130, 246, 0.5) !important;
+  }
+
+  .q-field--outlined.q-field--focused .q-field__control,
+  .q-field--filled.q-field--focused .q-field__control,
+  .q-field--standout.q-field--focused .q-field__control {
+    border-color: rgba(59, 130, 246, 0.8) !important;
+    box-shadow:
+      inset 0 1px 3px rgba(0, 0, 0, 0.05),
+      0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  // Botones - Azules con texto blanco
+  .q-btn {
+    border-radius: 12px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+    will-change: transform;
+
+    &:hover {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+      transform: translateY(0);
+    }
+  }
+
+  .q-btn--unelevated {
+    background: #3b82f6 !important;
+    color: #ffffff !important;
+  }
+
+  .q-btn--outline {
+    background: transparent !important;
+    border: 2px solid rgba(59, 130, 246, 0.5) !important;
+    color: #3b82f6 !important;
+    box-shadow: none !important;
+
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.8) !important;
+    }
+  }
+
+  .q-btn--flat {
+    box-shadow: none !important;
+
+    &:hover {
+      background: rgba(59, 130, 246, 0.1) !important;
+    }
+  }
+
+  // Menú - Blanco con borde azul
+  .q-menu {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+  }
+
+  // Textos en modo claro
+  .text-white {
+    color: #020617 !important;
+  }
+
+  .text-grey-5 {
+    color: #64748b !important;
+  }
+
+  // Tablas
+  .q-table {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+
+    thead tr,
+    tbody td {
+      border-color: rgba(59, 130, 246, 0.1) !important;
+    }
+
+    tbody tr:hover {
+      background: rgba(59, 130, 246, 0.05) !important;
+    }
+  }
+}
+
+// Mejorar contraste de texto - modo oscuro
+.body--dark {
+  .text-grey,
+  .text-grey-7,
+  .text-grey-6 {
+    color: rgba(255, 255, 255, 0.75) !important;
+  }
+
+  .text-grey-5 {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  .text-grey-8 {
+    color: rgba(255, 255, 255, 0.95) !important;
+  }
+}
+
+// Separadores - Blancos en modo oscuro, azules en modo claro
+.body--dark .q-separator {
+  background: rgba(255, 255, 255, 0.15) !important;
+  height: 1px !important;
+  box-shadow: none;
+}
+
+.body--light .q-separator {
+  background: rgba(59, 130, 246, 0.2) !important;
+  height: 1px !important;
+  box-shadow: none;
+}
+
+// Badges optimizados
+.q-badge {
+  border-radius: 8px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+// Toolbar neumórfico
+.q-toolbar {
+  background: transparent !important;
+}
+
+// Items - Highlights blancos/azules
+.body--dark .q-item {
+  border-radius: 8px !important;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
+}
+
+.body--light .q-item {
+  border-radius: 8px !important;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: rgba(59, 130, 246, 0.08) !important;
+  }
+}
+
+// List items
+.q-list {
+  background: transparent !important;
+}
+
+.q-item__label--caption {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+// Media queries para padding responsive
+@media (max-width: 1024px) {
+  .q-page {
+    padding: 1.5rem 1rem !important;
+  }
+}
+
+@media (max-width: 599px) {
+  .q-page {
+    padding: 1rem 0.75rem !important;
+  }
+}
