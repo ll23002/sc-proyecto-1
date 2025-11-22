@@ -211,29 +211,170 @@ const prepararDatosDiario = () => {
   return filas
 }
 
+//______________________________________________________________
+// Reporte Libro Diario Excel
+//______________________________________________________________
 const reporteDiarioExcel = () => {
   const datos = prepararDatosDiario()
-  const ws = XLSX.utils.json_to_sheet(datos)
+  const ws = XLSX.utils.json_to_sheet(datos, { origin: "A5" })
+
+
+  const fechaHoy = new Date().toLocaleDateString()
+  const encabezado = [
+    ["EMPRESA: Comercial ABC S.A. de C.V."],
+    ["LIBRO DIARIO"],
+    [`Fecha de generación: ${fechaHoy}`],
+    [""]
+  ]
+
+  XLSX.utils.sheet_add_aoa(ws, encabezado, { origin: "A1" })
+  ws["!merges"] = [
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } },
+    { s: { r: 1, c: 0 }, e: { r: 1, c: 4 } },
+    { s: { r: 2, c: 0 }, e: { r: 2, c: 4 } },
+    { s: { r: 3, c: 0 }, e: { r: 3, c: 4 } }
+  ]
+
+  if (ws["A1"]) ws["A1"].s = { font: { bold: true }, alignment: { horizontal: "center" } }
+  if (ws["A2"]) ws["A2"].s = { font: { bold: true }, alignment: { horizontal: "center" } }
+  if (ws["A3"]) ws["A3"].s = { alignment: { horizontal: "center" } }
+
+  ws["!cols"] = [
+    { wch: 20 },
+    { wch: 10 },
+    { wch: 40 },
+    { wch: 15 },
+    { wch: 15 }
+  ]
+
   const wb = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(wb, ws, "Libro Diario")
   XLSX.writeFile(wb, "Libro_Diario.xlsx")
 }
 
+//______________________________________________________________
+// Reporte Libro Diario
+//______________________________________________________________
 const reporteDiarioHTML = () => {
-  const datos = prepararDatosDiario()
+  const datos = prepararDatosDiario();
+
   let html = `
-    <html><head><title>Libro Diario</title>
-    <style>table {width: 100%; border-collapse: collapse;} th, td {border: 1px solid #ddd; padding: 8px;} th {background-color: #f2f2f2;}</style>
-    </head><body><h1>Libro Diario</h1><table>
-    <thead><tr><th>Fecha</th><th>Asiento</th><th>Cuenta</th><th>Descripción</th><th>Debe</th><th>Haber</th></tr></thead><tbody>`
+<html>
+<head>
+  <title>Libro Diario</title>
+
+  <!-- Quasar -->
+  <link href="https://cdn.jsdelivr.net/npm/quasar@2/dist/quasar.prod.css" rel="stylesheet">
+
+  <style>
+    body {
+      padding: 32px;
+      font-family: 'Inter', 'Roboto', sans-serif;
+      background: #10131a;
+      color: #e5e7eb;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 28px;
+      color: #ffffff;
+      font-size: 45px;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .report-card {
+      background: #1a1d27;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0px 6px 16px rgba(0,0,0,0.45);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    thead tr {
+      background: #2e3346;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #2a2f3b;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #1f2330;
+    }
+
+    tbody tr:hover {
+      background: #2a3040;
+      transition: 0.2s;
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    .descripcion {
+      max-width: 320px;
+      white-space: normal;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Libro Diario</h1>
+
+  <div class="report-card">
+
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Asiento</th>
+          <th>Cuenta</th>
+          <th>Descripci&oacuten</th>
+          <th class="right">Debe</th>
+          <th class="right">Haber</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
 
   datos.forEach(d => {
-    html += `<tr><td>${d.Fecha}</td><td>${d.Asiento}</td><td>${d.Cuenta}</td><td>${d.Descripción}</td>
-             <td align="right">$${d.Debe.toFixed(2)}</td><td align="right">$${d.Haber.toFixed(2)}</td></tr>`
-  })
-  html += '</tbody></table></body></html>'
-  abrirVentana(html)
-}
+    html += `
+      <tr>
+        <td>${d.Fecha}</td>
+        <td>${d.Asiento}</td>
+        <td>${d.Cuenta}</td>
+        <td class="descripcion">${d.Descripción}</td>
+        <td class="right">$${d.Debe.toFixed(2)}</td>
+        <td class="right">$${d.Haber.toFixed(2)}</td>
+      </tr>
+    `;
+  });
+
+  html += `
+      </tbody>
+    </table>
+
+  </div>
+
+</body>
+</html>
+  `;
+
+  abrirVentana(html);
+};
 
 const prepararDatosMayor = () => {
   const cuentas = {}
@@ -258,61 +399,228 @@ const prepararDatosMayor = () => {
   return cuentas
 }
 
+//______________________________________________________________
+// Reporte Libro Mayor Excel
+//______________________________________________________________
 const reporteMayorExcel = () => {
   const cuentas = prepararDatosMayor()
   const filasExcel = []
 
   Object.keys(cuentas).sort().forEach(codigo => {
     const cta = cuentas[codigo]
-    filasExcel.push({ Fecha: `CUENTA: ${codigo} - ${cta.nombre}`, Asiento: '', Descripción: '', Debe: '', Haber: '' })
+
+    filasExcel.push({
+      Fecha: `CUENTA: ${codigo} - ${cta.nombre}`,
+      Asiento: '',
+      Descripción: '',
+      Debe: '',
+      Haber: ''
+    })
+
     cta.movimientos.forEach(m => {
       filasExcel.push({
-        Fecha: m.fecha, Asiento: m.asiento, Descripción: m.descripcion,
-        Debe: m.debe, Haber: m.haber
+        Fecha: m.fecha,
+        Asiento: m.asiento,
+        Descripción: m.descripcion,
+        Debe: m.debe,
+        Haber: m.haber
       })
     })
+
     filasExcel.push({
-      Fecha: 'TOTAL CUENTA', Asiento: '', Descripción: '',
-      Debe: cta.totalDebe, Haber: cta.totalHaber
+      Fecha: 'TOTAL CUENTA',
+      Asiento: '',
+      Descripción: '',
+      Debe: cta.totalDebe,
+      Haber: cta.totalHaber
     })
+
     filasExcel.push({})
   })
 
-  const ws = XLSX.utils.json_to_sheet(filasExcel)
+  const ws = XLSX.utils.json_to_sheet(filasExcel, { origin: "A5" })
+  const fechaHoy = new Date().toLocaleDateString()
+
+  const encabezado = [
+    ["EMPRESA: Comercial ABC S.A. de C.V."],
+    ["LIBRO MAYOR"],
+    [`Fecha de generación: ${fechaHoy}`],
+    [""]
+  ]
+
+  XLSX.utils.sheet_add_aoa(ws, encabezado, { origin: "A1" })
+  ws["!merges"] = [
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } },
+    { s: { r: 1, c: 0 }, e: { r: 1, c: 4 } },
+    { s: { r: 2, c: 0 }, e: { r: 2, c: 4 } },
+    { s: { r: 3, c: 0 }, e: { r: 3, c: 4 } }
+  ]
+
+  ws["!cols"] = [
+    { wch: 20 },
+    { wch: 10 },
+    { wch: 40 },
+    { wch: 15 },
+    { wch: 15 }
+  ]
+
   const wb = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(wb, ws, "Libro Mayor")
   XLSX.writeFile(wb, "Libro_Mayor.xlsx")
 }
 
+//______________________________________________________________
+// Reporte Libro Mayor
+//______________________________________________________________
 const reporteMayorHTML = () => {
-  const cuentas = prepararDatosMayor()
-  let html = `<html><head><title>Libro Mayor</title>
-    <style>
-      body { font-family: sans-serif; }
-      table {width: 100%; border-collapse: collapse; margin-bottom: 20px;}
-      th, td {border: 1px solid #ddd; padding: 6px;}
-      .header-cta { background: #e3f2fd; font-weight: bold; }
-      .total-row { background: #f5f5f5; font-weight: bold; }
-    </style></head><body><h1>Libro Mayor</h1>`
+  const cuentas = prepararDatosMayor();
 
-  Object.keys(cuentas).sort().forEach(codigo => {
-    const cta = cuentas[codigo]
-    html += `<h3>${codigo} - ${cta.nombre}</h3>
-      <table><thead><tr><th>Fecha</th><th>Asiento</th><th>Descripción</th><th>Debe</th><th>Haber</th></tr></thead><tbody>`
+  let html = `
+<html>
+<head>
+  <title>Libro Mayor</title>
 
-    cta.movimientos.forEach(m => {
-      html += `<tr><td>${m.fecha}</td><td>${m.asiento}</td><td>${m.descripcion}</td>
-               <td align="right">$${m.debe.toFixed(2)}</td><td align="right">$${m.haber.toFixed(2)}</td></tr>`
-    })
+  <!-- Quasar -->
+  <link href="https://cdn.jsdelivr.net/npm/quasar@2/dist/quasar.prod.css" rel="stylesheet">
 
-    html += `<tr class="total-row"><td colspan="3" align="right">TOTAL</td>
-             <td align="right">$${cta.totalDebe.toFixed(2)}</td><td align="right">$${cta.totalHaber.toFixed(2)}</td></tr>`
-    html += `</tbody></table>`
-  })
+  <style>
+    body {
+      padding: 32px;
+      font-family: 'Inter', 'Roboto', sans-serif;
+      background: #10131a;
+      color: #e5e7eb;
+    }
 
-  html += '</body></html>'
-  abrirVentana(html)
-}
+    h1 {
+      text-align: center;
+      margin-bottom: 32px;
+      color: #ffffff;
+      font-size: 45px;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    h3 {
+      margin-top: 35px;
+      margin-bottom: 12px;
+      color: #d1d5db;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    /* Tarjeta por cuenta contable */
+    .cuenta-card {
+      background: #1a1d27;
+      padding: 18px 22px;
+      border-radius: 12px;
+      margin-bottom: 28px;
+      box-shadow: 0px 6px 16px rgba(0,0,0,0.45);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    thead tr {
+      background: #2e3346;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #2a2f3b;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #1f2330;
+    }
+
+    tbody tr:hover {
+      background: #2a3040;
+      transition: 0.2s;
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    /* Fila total */
+    .total-row {
+      background: #2c3244 !important;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <h1>Libro Mayor</h1>
+  `;
+
+  Object.keys(cuentas)
+    .sort()
+    .forEach(codigo => {
+      const cta = cuentas[codigo];
+
+      html += `
+        <div class="cuenta-card">
+          <h3>${codigo} - ${cta.nombre}</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Asiento</th>
+                <th>Descripci&oacuten</th>
+                <th class="right">Debe</th>
+                <th class="right">Haber</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      cta.movimientos.forEach(m => {
+        html += `
+          <tr>
+            <td>${m.fecha}</td>
+            <td>${m.asiento}</td>
+            <td>${m.descripcion}</td>
+            <td class="right">$${m.debe.toFixed(2)}</td>
+            <td class="right">$${m.haber.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+          <tr class="total-row">
+            <td colspan="3" class="right">TOTAL</td>
+            <td class="right">$${cta.totalDebe.toFixed(2)}</td>
+            <td class="right">$${cta.totalHaber.toFixed(2)}</td>
+          </tr>
+
+          </tbody>
+        </table>
+
+      </div>
+      `;
+    });
+
+  html += `
+</body>
+</html>
+  `;
+
+  abrirVentana(html);
+};
 
 const abrirVentana = (html) => {
   const blob = new Blob([html], { type: 'text/html' })
