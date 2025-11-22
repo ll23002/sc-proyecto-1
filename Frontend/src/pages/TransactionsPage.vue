@@ -1,11 +1,12 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="text-h4 q-mb-md page-title">Gestión de Transacciones Pendientes</div>
+    <div class="text-h4 q-mb-md page-title">Gestión de Transacciones</div>
 
-    <q-card class="themed-card">
+    <!-- Tabla de Transacciones Pendientes -->
+    <q-card class="themed-card q-mb-lg">
       <q-card-section>
         <div class="row justify-between items-center q-mb-md">
-          <div class="text-h6 themed-title">Transacciones por Clasificar</div>
+          <div class="text-h6 themed-title">Transacciones Pendientes por Clasificar</div>
           <q-btn
             color="primary"
             label="Refrescar"
@@ -126,6 +127,45 @@
                 class="q-ml-sm"
                 @click="confirmDelete(props.row.id)"
               />
+            </q-td>
+          </template>
+        </q-table>
+      </q-card-section>
+    </q-card>
+
+    <!-- Tabla de Transacciones Clasificadas -->
+    <q-card class="themed-card">
+      <q-card-section>
+        <div class="row justify-between items-center q-mb-md">
+          <div class="text-h6 themed-title">Transacciones Clasificadas</div>
+          <q-btn
+            color="primary"
+            label="Cargar Clasificadas"
+            icon="download"
+            :loading="loadingClasificadas"
+            @click="cargarTransaccionesClasificadas"
+          />
+        </div>
+
+        <q-table
+          :rows="transaccionesClasificadas"
+          :columns="columnsClasificadas"
+          row-key="id"
+          flat
+          dark
+          class="themed-table"
+          v-model:pagination="paginationClasificadas"
+          :loading="loadingClasificadas"
+        >
+          <template v-slot:body-cell-debe="props">
+            <q-td :props="props" class="text-right text-positive">
+              {{ props.row.debe > 0 ? formatCurrency(props.row.debe) : '-' }}
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-haber="props">
+            <q-td :props="props" class="text-right text-negative">
+              {{ props.row.haber > 0 ? formatCurrency(props.row.haber) : '-' }}
             </q-td>
           </template>
         </q-table>
@@ -255,6 +295,17 @@ const saving = ref(false)
 const transacciones = ref([])
 const cuentas = ref([])
 
+// Variables para transacciones clasificadas
+const loadingClasificadas = ref(false)
+const transaccionesClasificadas = ref([])
+const paginationClasificadas = ref({
+  sortBy: 'fecha',
+  descending: true,
+  page: 1,
+  rowsPerPage: 10,
+  rowsPerPageOptions: [5, 10, 20, 50, 100]
+})
+
 const showDialog = ref(false)
 const transaccionSeleccionada = ref(null)
 const asientoDetalles = ref([])
@@ -265,6 +316,16 @@ const columns = [
   { name: 'descripcion', label: 'Descripción Original', field: 'descripcion', align: 'left' },
   { name: 'monto', label: 'Monto', field: 'monto', align: 'right' },
   { name: 'actions', label: 'Acciones', field: 'actions', align: 'center' }
+]
+
+// Columnas para transacciones clasificadas
+const columnsClasificadas = [
+  { name: 'fecha', label: 'Fecha', field: 'fecha', align: 'left', sortable: true },
+  { name: 'codigo_cuenta', label: 'Código', field: 'codigo_cuenta', align: 'left', sortable: true },
+  { name: 'cuenta', label: 'Cuenta Contable', field: 'cuenta', align: 'left', sortable: true },
+  { name: 'descripcion', label: 'Descripción', field: 'descripcion', align: 'left' },
+  { name: 'debe', label: 'Debe', field: 'debe', align: 'right', sortable: true },
+  { name: 'haber', label: 'Haber', field: 'haber', align: 'right', sortable: true }
 ]
 
 const cuentasOptions = computed(() => cuentas.value.map(c => ({
@@ -413,6 +474,65 @@ const cargarDatos = async () => {
   }
 }
 
+const cargarTransaccionesClasificadas = async () => {
+  loadingClasificadas.value = true
+  try {
+    // Asegurarse de que las cuentas estén cargadas primero
+    if (cuentas.value.length === 0) {
+      const ctaRes = await api.getCuentas()
+      cuentas.value = ctaRes.data
+    }
+
+    const response = await api.getAsientosContables()
+
+    // Transformar los asientos en un array plano de detalles
+    const detalles = []
+
+    response.data.forEach(asiento => {
+      if (asiento.detalles && Array.isArray(asiento.detalles)) {
+        asiento.detalles.forEach(detalle => {
+          // Buscar la cuenta correspondiente para obtener código y nombre
+          // Intentar con diferentes posibles nombres de campo
+          const cuentaId = detalle.cuenta_id || detalle.cuenta || detalle.cuentaId
+          const cuenta = cuentas.value.find(c => c.id === cuentaId)
+
+          // Log para debugging (puedes quitar esto después)
+          if (!cuenta) {
+            console.warn('Cuenta no encontrada para ID:', cuentaId, 'Detalle:', detalle)
+          }
+
+          detalles.push({
+            id: `${asiento.id}-${detalle.id || Math.random()}`,
+            fecha: asiento.fecha,
+            codigo_cuenta: cuenta?.codigo_cuenta || 'N/A',
+            cuenta: cuenta?.nombre_cuenta || `ID: ${cuentaId || 'undefined'}`,
+            descripcion: detalle.descripcion || asiento.numero_asiento || '',
+            debe: parseFloat(detalle.debe || 0),
+            haber: parseFloat(detalle.haber || 0)
+          })
+        })
+      }
+    })
+
+    transaccionesClasificadas.value = detalles
+
+    $q.notify({
+      type: 'positive',
+      message: `${detalles.length} registros cargados`,
+      position: 'top'
+    })
+  } catch (e) {
+    $q.notify({
+      type: 'negative',
+      message: 'Error cargando transacciones clasificadas',
+      caption: e.response?.data?.error || e.message
+    })
+    console.error('Error completo:', e)
+  } finally {
+    loadingClasificadas.value = false
+  }
+}
+
 const abrirDialogoContabilizar = (tx) => {
   transaccionSeleccionada.value = tx
   showDialog.value = true
@@ -498,6 +618,9 @@ const guardarAsiento = async () => {
     $q.notify({ type: 'positive', message: '¡Contabilizado con éxito!' })
     showDialog.value = false
     transacciones.value = transacciones.value.filter(t => t.id !== transaccionSeleccionada.value.id)
+
+    // Recargar automáticamente las transacciones clasificadas
+    await cargarTransaccionesClasificadas()
 
   } catch (e) {
     $q.notify({ type: 'negative', message: e.response?.data?.error || 'Error al guardar' })
