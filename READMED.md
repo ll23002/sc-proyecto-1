@@ -14,3 +14,13 @@ Si ya has construido los servicios previamente, puedes iniciarlos con el siguien
 ```bash
  docker compose up -d backend frontend pgadmin4_16 db16
 ```
+
+
+## Colaboradores
+
+Todos los derechos reservados a:
+
+- Diego Arturo Ortez Castillo OC22002
+- Francisco Manuel Calderón Sandoval CS23038
+- Nelson Adalid Orantes Mendoza OM23011
+- Samuel Alexander López López LL23002
