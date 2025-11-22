@@ -262,60 +262,107 @@ const reporteDiarioHTML = () => {
 <html>
 <head>
   <title>Libro Diario</title>
-
-  <!-- Quasar -->
-  <link href="https://cdn.jsdelivr.net/npm/quasar@2/dist/quasar.prod.css" rel="stylesheet">
-
+  <meta charset="UTF-8">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      padding: 32px;
-      font-family: 'Inter', 'Roboto', sans-serif;
-      background: #10131a;
-      color: #e5e7eb;
+      padding: 40px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      color: #1a202c;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #3b82f6;
     }
 
     h1 {
-      text-align: center;
-      margin-bottom: 28px;
-      color: #ffffff;
-      font-size: 45px;
-      letter-spacing: 0.5px;
-      font-weight: 600;
+      color: #1e40af;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
     }
 
-    .report-card {
-      background: #1a1d27;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0px 6px 16px rgba(0,0,0,0.45);
+    .company-name {
+      color: #64748b;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .report-date {
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .print-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .print-button:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 20px;
       font-size: 14px;
     }
 
     thead tr {
-      background: #2e3346;
-      color: #ffffff;
+      background: #f1f5f9;
+      color: #1e293b;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       font-size: 13px;
     }
 
-    th, td {
-      padding: 10px 12px;
-      border-bottom: 1px solid #2a2f3b;
+    th {
+      padding: 14px 12px;
+      border-bottom: 2px solid #cbd5e1;
+      text-align: left;
     }
 
-    tbody tr:nth-child(even) {
-      background: #1f2330;
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
     }
 
     tbody tr:hover {
-      background: #2a3040;
+      background: #f8fafc;
       transition: 0.2s;
     }
 
@@ -326,15 +373,49 @@ const reporteDiarioHTML = () => {
     .descripcion {
       max-width: 320px;
       white-space: normal;
+      color: #475569;
+    }
+
+    @media print {
+      .print-button {
+        display: none;
+      }
+
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .container {
+        box-shadow: none;
+        padding: 20px;
+      }
+
+      table {
+        page-break-inside: auto;
+      }
+
+      tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+      }
     }
   </style>
 </head>
 
 <body>
+  <button class="print-button" onclick="window.print()">🖨️ Imprimir</button>
 
-  <h1>Libro Diario</h1>
-
-  <div class="report-card">
+  <div class="container">
+    <div class="header">
+      <div class="company-name">Comercial ABC S.A. de C.V.</div>
+      <h1>Libro Diario</h1>
+      <div class="report-date">Generado el ${new Date().toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })}</div>
+    </div>
 
     <table>
       <thead>
@@ -342,7 +423,7 @@ const reporteDiarioHTML = () => {
           <th>Fecha</th>
           <th>Asiento</th>
           <th>Cuenta</th>
-          <th>Descripci&oacuten</th>
+          <th>Descripción</th>
           <th class="right">Debe</th>
           <th class="right">Haber</th>
         </tr>
@@ -366,7 +447,6 @@ const reporteDiarioHTML = () => {
   html += `
       </tbody>
     </table>
-
   </div>
 
 </body>
@@ -479,43 +559,95 @@ const reporteMayorHTML = () => {
 <html>
 <head>
   <title>Libro Mayor</title>
-
-  <!-- Quasar -->
-  <link href="https://cdn.jsdelivr.net/npm/quasar@2/dist/quasar.prod.css" rel="stylesheet">
-
+  <meta charset="UTF-8">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      padding: 32px;
-      font-family: 'Inter', 'Roboto', sans-serif;
-      background: #10131a;
-      color: #e5e7eb;
+      padding: 40px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      color: #1a202c;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #3b82f6;
     }
 
     h1 {
-      text-align: center;
-      margin-bottom: 32px;
-      color: #ffffff;
-      font-size: 45px;
-      letter-spacing: 0.5px;
+      color: #1e40af;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .company-name {
+      color: #64748b;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .report-date {
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .print-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
       font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .print-button:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
     }
 
     h3 {
-      margin-top: 35px;
-      margin-bottom: 12px;
-      color: #d1d5db;
-      font-size: 20px;
+      margin-top: 30px;
+      margin-bottom: 16px;
+      color: #1e40af;
+      font-size: 18px;
       font-weight: 600;
-      letter-spacing: 0.3px;
+      padding: 12px 16px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 4px;
     }
 
-    /* Tarjeta por cuenta contable */
     .cuenta-card {
-      background: #1a1d27;
-      padding: 18px 22px;
-      border-radius: 12px;
-      margin-bottom: 28px;
-      box-shadow: 0px 6px 16px rgba(0,0,0,0.45);
+      background: white;
+      padding: 0;
+      margin-bottom: 30px;
+      page-break-inside: avoid;
     }
 
     table {
@@ -526,24 +658,27 @@ const reporteMayorHTML = () => {
     }
 
     thead tr {
-      background: #2e3346;
-      color: #ffffff;
+      background: #f1f5f9;
+      color: #1e293b;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       font-size: 13px;
     }
 
-    th, td {
-      padding: 10px 12px;
-      border-bottom: 1px solid #2a2f3b;
+    th {
+      padding: 14px 12px;
+      border-bottom: 2px solid #cbd5e1;
+      text-align: left;
     }
 
-    tbody tr:nth-child(even) {
-      background: #1f2330;
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
     }
 
     tbody tr:hover {
-      background: #2a3040;
+      background: #f8fafc;
       transition: 0.2s;
     }
 
@@ -551,19 +686,57 @@ const reporteMayorHTML = () => {
       text-align: right;
     }
 
-    /* Fila total */
     .total-row {
-      background: #2c3244 !important;
+      background: #dbeafe !important;
       font-weight: 600;
-      color: #ffffff;
+      color: #1e40af;
+      border-top: 2px solid #3b82f6;
     }
 
+    @media print {
+      .print-button {
+        display: none;
+      }
+
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .container {
+        box-shadow: none;
+        padding: 20px;
+      }
+
+      .cuenta-card {
+        page-break-inside: avoid;
+      }
+
+      table {
+        page-break-inside: auto;
+      }
+
+      tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+      }
+    }
   </style>
 </head>
 
 <body>
+  <button class="print-button" onclick="window.print()">🖨️ Imprimir</button>
 
-  <h1>Libro Mayor</h1>
+  <div class="container">
+    <div class="header">
+      <div class="company-name">Comercial ABC S.A. de C.V.</div>
+      <h1>Libro Mayor</h1>
+      <div class="report-date">Generado el ${new Date().toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })}</div>
+    </div>
   `;
 
   Object.keys(cuentas)
@@ -580,7 +753,7 @@ const reporteMayorHTML = () => {
               <tr>
                 <th>Fecha</th>
                 <th>Asiento</th>
-                <th>Descripci&oacuten</th>
+                <th>Descripción</th>
                 <th class="right">Debe</th>
                 <th class="right">Haber</th>
               </tr>
@@ -602,9 +775,9 @@ const reporteMayorHTML = () => {
 
       html += `
           <tr class="total-row">
-            <td colspan="3" class="right">TOTAL</td>
-            <td class="right">$${cta.totalDebe.toFixed(2)}</td>
-            <td class="right">$${cta.totalHaber.toFixed(2)}</td>
+            <td colspan="3" class="right"><strong>TOTAL</strong></td>
+            <td class="right"><strong>$${cta.totalDebe.toFixed(2)}</strong></td>
+            <td class="right"><strong>$${cta.totalHaber.toFixed(2)}</strong></td>
           </tr>
 
           </tbody>
@@ -615,6 +788,8 @@ const reporteMayorHTML = () => {
     });
 
   html += `
+  </div>
+
 </body>
 </html>
   `;
