@@ -1,5 +1,7 @@
 .idea/
 
+.env
+
 Frontend/node_modules/
 Frontend/.quasar/
 Frontend/dist/
