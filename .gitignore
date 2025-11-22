@@ -16,11 +16,6 @@ Frontend/src-capacitor/www
 Frontend/src-capacitor/node_modules/
 
 
-
-# Entornos virtuales
-Backend/.venv/
-Backend/env/
-
 # Archivos de Python/Django
 Backend/__pycache__/
 Backend/*.pyc
