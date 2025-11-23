@@ -16,6 +16,8 @@ Si ya has construido los servicios previamente, puedes iniciarlos con el siguien
  docker compose up -d backend frontend pgadmin4_16 db16
 ```
 
+### Se anexa el archivo TransaccionesEjemplo.xlsx para poder probar las funcionalidades del sistema.
+
 
 ## Colaboradores
 

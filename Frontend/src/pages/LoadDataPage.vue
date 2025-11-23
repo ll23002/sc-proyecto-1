@@ -63,14 +63,22 @@
               <li v-for="(error, idx) in validationErrors" :key="idx">{{ error }}</li>
             </ul>
           </q-banner>
-          <q-btn
-            color="positive"
-            label="Enviar al Backend"
-            icon="cloud_upload"
-            :loading="uploading"
-            :disable="validationErrors.length > 0"
-            @click="sendToBackend"
-          />
+<q-btn
+  color="positive"
+  label="Enviar al Backend"
+  icon="cloud_upload"
+  :loading="uploading"
+  :disable="validationErrors.length > 0"
+  @click="() => {
+    $q.notify({
+      color: 'info',
+      message: 'Esto puede tardar (tiempo estimado 1:00 min), espere un poco...',
+      position: 'top',
+      timeout: 3000,
+    })
+    sendToBackend()
+  }"
+/>
         </div>
       </q-card-section>
     </q-card>
