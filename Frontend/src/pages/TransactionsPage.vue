@@ -240,7 +240,7 @@
               <div class="col-12 col-sm-4">
                 <q-select
                   v-model="nuevaLinea.cuenta_id"
-                  :options="cuentasOptions"
+                  :options="cuentasFiltradas"
                   label="Cuenta Contable"
                   dense
                   outlined
@@ -248,7 +248,39 @@
                   options-dense
                   emit-value
                   map-options
-                />
+                  use-input
+                  input-debounce="300"
+                  @filter="filtrarCuentas"
+                  @input-value="inputCuenta = $event"
+                  hide-selected
+                  fill-input
+                  clearable
+                  clear-icon="close"
+                  hint="Escribe para buscar por código o nombre"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="search" />
+                  </template>
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        <div class="text-center q-py-md">
+                          <q-icon name="search_off" size="2em" class="q-mb-sm" />
+                          <div>No se encontraron cuentas</div>
+                          <div class="text-caption">Prueba con otro término de búsqueda</div>
+                        </div>
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:after-options v-if="cuentasFiltradas.length > 0">
+                    <q-separator />
+                    <q-item dense class="text-grey-6 text-caption">
+                      <q-item-section>
+                        {{ cuentasFiltradas.length }} cuenta(s) encontrada(s)
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
               </div>
               <div class="col-12 col-sm-4">
                 <q-input v-model="nuevaLinea.descripcion" label="Descripción" dense outlined dark />
@@ -305,8 +337,20 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(linea, index) in asientoDetalles" :key="index">
-                  <td>{{ getCuentaLabel(linea.cuenta_id) }}</td>
+                <tr
+                  v-for="(linea, index) in asientoDetalles"
+                  :key="index"
+                  class="editable-row"
+                  @click="editarLinea(index)"
+                  style="cursor: pointer;"
+                  :class="{ 'row-sin-cuenta': !linea.cuenta_id }"
+                >
+                  <td>
+                    <span v-if="linea.cuenta_id">{{ getCuentaLabel(linea.cuenta_id) }}</span>
+                    <span v-else class="text-warning text-weight-bold">
+                      <q-icon name="warning" size="xs" /> Sin cuenta asignada
+                    </span>
+                  </td>
                   <td>{{ linea.descripcion }}</td>
                   <td class="text-right text-positive">
                     {{ linea.debe > 0 ? formatCurrency(linea.debe) : '-' }}
@@ -314,7 +358,7 @@
                   <td class="text-right text-negative">
                     {{ linea.haber > 0 ? formatCurrency(linea.haber) : '-' }}
                   </td>
-                  <td class="text-center">
+                  <td class="text-center" @click.stop>
                     <q-btn
                       flat
                       round
@@ -392,6 +436,10 @@ const transaccionSeleccionada = ref(null)
 const asientoDetalles = ref([])
 const nuevaLinea = ref({ cuenta_id: null, descripcion: '', debe: 0, haber: 0 })
 
+// Variables para el autocompletado de cuentas
+const inputCuenta = ref('')
+const cuentasFiltradas = ref([])
+
 const columns = [
   { name: 'fecha', label: 'Fecha', field: 'fecha', align: 'left', sortable: true },
   { name: 'descripcion', label: 'Descripción Original', field: 'descripcion', align: 'left' },
@@ -415,6 +463,23 @@ const cuentasOptions = computed(() =>
     value: c.id,
   })),
 )
+
+// Función para filtrar cuentas en el autocompletado
+const filtrarCuentas = (val, update) => {
+  if (val === '') {
+    update(() => {
+      cuentasFiltradas.value = cuentasOptions.value
+    })
+    return
+  }
+
+  update(() => {
+    const needle = val.toLowerCase()
+    cuentasFiltradas.value = cuentasOptions.value.filter(
+      (v) => v.label.toLowerCase().indexOf(needle) > -1
+    )
+  })
+}
 
 // Monedas para el formulario manual
 const monedaOptions = [
@@ -572,8 +637,16 @@ const cargarDatos = async () => {
   loading.value = true
   try {
     const [txRes, ctaRes] = await Promise.all([api.getTransacciones(), api.getCuentas()])
-    transacciones.value = txRes.data
+    // Filtrar solo transacciones NO procesadas
+    transacciones.value = txRes.data.filter(t => !t.procesada)
     cuentas.value = ctaRes.data
+    // Inicializar cuentas filtradas con todas las opciones
+    cuentasFiltradas.value = cuentasOptions.value
+
+    // Si ya había transacciones clasificadas cargadas, recargarlas automáticamente
+    if (transaccionesClasificadas.value.length > 0) {
+      await cargarTransaccionesClasificadas()
+    }
   } catch (e) {
     $q.notify({ type: 'negative', message: 'Error cargando datos' })
     console.error(e)
@@ -589,6 +662,8 @@ const cargarTransaccionesClasificadas = async () => {
     if (cuentas.value.length === 0) {
       const ctaRes = await api.getCuentas()
       cuentas.value = ctaRes.data
+      // Inicializar cuentas filtradas
+      cuentasFiltradas.value = cuentasOptions.value
     }
 
     const response = await api.getAsientosContables()
@@ -671,6 +746,18 @@ const abrirDialogoContabilizar = (tx) => {
     }
   }
 
+  // Si no hay cuenta sugerida válida, notificar al usuario
+  if (!cuentaSugeridaId) {
+    $q.notify({
+      type: 'warning',
+      message: 'No se encontró una cuenta contable correspondiente para este asiento',
+      caption: 'Por favor asigna manualmente las cuentas haciendo clic en la fila',
+      timeout: 5000,
+      position: 'top',
+      icon: 'warning',
+    })
+  }
+
   if (esEgreso) {
     asientoDetalles.value = [
       {
@@ -702,6 +789,30 @@ const abrirDialogoContabilizar = (tx) => {
       },
     ]
   }
+}
+
+const editarLinea = (index) => {
+  const linea = asientoDetalles.value[index]
+
+  // Pre-llenar el formulario de nueva línea con los datos existentes
+  nuevaLinea.value = {
+    cuenta_id: linea.cuenta_id,
+    descripcion: linea.descripcion,
+    debe: linea.debe,
+    haber: linea.haber,
+  }
+
+  // Eliminar la línea que se está editando
+  asientoDetalles.value.splice(index, 1)
+
+  // Notificar al usuario
+  $q.notify({
+    type: 'info',
+    message: 'Editando asiento',
+    caption: 'Modifica los valores y presiona "Agregar Línea" para guardar',
+    timeout: 2000,
+    position: 'top',
+  })
 }
 
 const agregarLinea = () => {
@@ -775,5 +886,18 @@ onMounted(cargarDatos)
 
 .btn-apply:hover {
   background-color: #094edd !important;
+}
+
+.editable-row:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  transition: background-color 0.2s ease;
+}
+
+.row-sin-cuenta {
+  background-color: rgba(255, 152, 0, 0.1) !important;
+}
+
+.row-sin-cuenta:hover {
+  background-color: rgba(255, 152, 0, 0.2) !important;
 }
 </style>
